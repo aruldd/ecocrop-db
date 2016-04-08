@@ -9,18 +9,29 @@ def chk(no):
 	soup = BeautifulSoup(requests.post(url).text,"lxml")
 	txt = [x.string for x in soup.find_all(['h2','td','th'])]
 	txt = [txt[i] for i in data]
+	txt.insert(0, no)
 	return txt
 final_data = []
 ids = []
+error = []
 with open('index.csv', newline='') as f:
     reader = csv.reader(f)
     for row in reader:
         ids.append(int(row[0]))
 
 for iD in ids:	
-	final_data.append(chk(iD))
-	print("done..")
+	try:
+		final_data.append(chk(iD))
+		print("done..")
+	except:
+		error.append(iD)
+		print("error")
 with open('data.csv', 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerows(final_data)	
-
+try:
+	with open('error.csv', 'w', newline='') as f:
+		writer = csv.writer(f)
+		writer.writerows(error)
+except:
+	pass
